@@ -6,19 +6,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.apache.commons.logging.Log;
 import com.dto.Ville;
 
 public class VilleDaoImpl implements VilleDao {
 
 	public VilleDaoImpl() {
+		//do nothing because it's the constructor
 	}
 
-	private static DaoFactory daoFactory;
-	private Connection connexion;
+	private  DaoFactory daoFactory;
+	private Log logger = null;
 
 	public ResultSet getVille(String codeINSEE) throws SQLException {
 
-		connexion = null;
+		Connection connexion = null;
 		daoFactory = DaoFactory.getInstance();
 		
 		String requete = null;
@@ -27,9 +29,10 @@ public class VilleDaoImpl implements VilleDao {
 		} else {
 			requete = "SELECT * FROM ville_france WHERE Code_INSEE = "+codeINSEE+";";
 		}
-
+		connexion = daoFactory.getConnection();
+		
 		try (Statement statement = connexion.createStatement()) {
-			connexion = daoFactory.getConnection();
+			
 			try (ResultSet resultat = statement.executeQuery(requete)){
 				return resultat;
 			}
@@ -40,7 +43,7 @@ public class VilleDaoImpl implements VilleDao {
 					connexion.rollback();
 				}
 			} catch (SQLException e2) {
-				System.out.println(e2);
+				logger.info(e2);
 			}
 		}
 
@@ -70,13 +73,7 @@ public class VilleDaoImpl implements VilleDao {
 			}
 
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			try {
-				connexion.rollback();
-
-			} catch (SQLException e2) {
-
-			}
+			logger.info(e);
 		}
 
 	}
@@ -102,14 +99,7 @@ public class VilleDaoImpl implements VilleDao {
 			}
 
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			try {
-				if (connexion != null) {
-					connexion.rollback();
-				}
-			} catch (SQLException e2) {
-
-			}
+			logger.info(e);
 		}
 
 	}
@@ -128,15 +118,7 @@ public class VilleDaoImpl implements VilleDao {
 
 			}
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-			try {
-				if (connexion != null) {
-					connexion.rollback();
-				}
-			} catch (SQLException e2) {
-
-			}
-
+			logger.info(e);
 		}
 	}
 }
