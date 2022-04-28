@@ -33,6 +33,7 @@ public class VilleDaoImpl implements VilleDao {
 				resultat = statement
 						.executeQuery("SELECT * FROM ville_france WHERE Code_commune_INSEE =" + codeINSEE + ";");
 			}
+			statement.close();
 		} catch (SQLException e) {
 			try {
 				if (connexion != null) {
@@ -68,7 +69,7 @@ public class VilleDaoImpl implements VilleDao {
 			preparedStatement.setString(6, Double.toString(ville.getLatitude()));
 			preparedStatement.setString(7, Double.toString(ville.getLongitude()));
 			preparedStatement.executeUpdate();
-
+			preparedStatement.close();
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			try {
@@ -94,33 +95,40 @@ public class VilleDaoImpl implements VilleDao {
 				preparedStatement = connexion
 						.prepareStatement("UPDATE ville_france SET Nom_commune =" + newVille.getNomCommune()
 								+ " WHERE Code_commune_INSEE = " + oldVille.getCodeCommuneINSEE() + ";");
+				preparedStatement.executeUpdate();
 			}
 			if (!oldVille.getLibelleAcheminement().equals(newVille.getLibelleAcheminement())) {
 				preparedStatement = connexion.prepareStatement(
 						"UPDATE ville_france SET Libelle_acheminement =" + newVille.getLibelleAcheminement()
 								+ " WHERE Code_commune_INSEE = " + oldVille.getCodeCommuneINSEE() + ";");
+				preparedStatement.executeUpdate();
 			}
 			if (Double.compare(oldVille.getLatitude(), newVille.getLatitude()) != 0) {
 				preparedStatement = connexion
 						.prepareStatement("UPDATE ville_france SET Latitude =" + Double.toString(newVille.getLatitude())
 								+ " WHERE Code_commune_INSEE = " + oldVille.getCodeCommuneINSEE() + ";");
+				preparedStatement.executeUpdate();
 			}
 			if (Double.compare(oldVille.getLongitude(), newVille.getLongitude()) != 0) {
 				preparedStatement = connexion.prepareStatement(
 						"UPDATE ville_france SET Longitude =" + Double.toString(newVille.getLongitude())
 								+ " WHERE Code_commune_INSEE = " + oldVille.getCodeCommuneINSEE() + ";");
+
+				preparedStatement.executeUpdate();
 			}
 			if (!oldVille.getCodePostal().equals(newVille.getCodePostal())) {
 				preparedStatement = connexion
 						.prepareStatement("UPDATE ville_france SET Code_postal =" + newVille.getCodePostal()
 								+ " WHERE Code_commune_INSEE = " + oldVille.getCodeCommuneINSEE() + ";");
+				preparedStatement.executeUpdate();
 			}
 			if (!oldVille.getCodeCommuneINSEE().equals(newVille.getCodeCommuneINSEE())) {
 				preparedStatement = connexion.prepareStatement(
 						"UPDATE ville_france SET Code_commune_INSEE =" + newVille.getCodeCommuneINSEE()
 								+ " WHERE Code_commune_INSEE = " + oldVille.getCodeCommuneINSEE() + ";");
+				preparedStatement.executeUpdate();
 			}
-			preparedStatement.executeUpdate();
+			preparedStatement.close();
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
