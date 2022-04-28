@@ -15,7 +15,7 @@ public class VilleDaoImpl implements VilleDao {
 
 	private static DaoFactory daoFactory;
 
-	public ResultSet getVille(String codeINSEE) {
+	public ResultSet getVille(String codeINSEE) throws SQLException {
 
 		Connection connexion = null;
 		Statement statement = null;
@@ -33,7 +33,7 @@ public class VilleDaoImpl implements VilleDao {
 				resultat = statement
 						.executeQuery("SELECT * FROM ville_france WHERE Code_commune_INSEE =" + codeINSEE + ";");
 			}
-			statement.close();
+
 		} catch (SQLException e) {
 			try {
 				if (connexion != null) {
@@ -42,12 +42,14 @@ public class VilleDaoImpl implements VilleDao {
 			} catch (SQLException e2) {
 				System.out.println(e2);
 			}
+		} finally {
+			statement.close();
 		}
 
 		return resultat;
 	}
 
-	public void saveVille(Ville ville) {
+	public void saveVille(Ville ville) throws SQLException {
 
 		Connection connexion = null;
 		PreparedStatement preparedStatement = null;
@@ -69,7 +71,7 @@ public class VilleDaoImpl implements VilleDao {
 			preparedStatement.setString(6, Double.toString(ville.getLatitude()));
 			preparedStatement.setString(7, Double.toString(ville.getLongitude()));
 			preparedStatement.executeUpdate();
-			preparedStatement.close();
+
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 			try {
@@ -79,56 +81,68 @@ public class VilleDaoImpl implements VilleDao {
 			} catch (SQLException e2) {
 
 			}
+		} finally {
+			preparedStatement.close();
 		}
 
 	}
 
-	public void updateVille(Ville oldVille, Ville newVille) {
+	public void updateVille(Ville oldVille, Ville newVille) throws SQLException {
 
 		Connection connexion = null;
-		PreparedStatement preparedStatement = null;
+		PreparedStatement preparedStatementNom = null;
+		PreparedStatement preparedStatementLibelle = null;
+		PreparedStatement preparedStatementLat = null;
+		PreparedStatement preparedStatementLong = null;
+		PreparedStatement preparedStatementPostal = null;
+		PreparedStatement preparedStatementInsee = null;
+		PreparedStatement preparedStatementLigne5 = null;
 		daoFactory = DaoFactory.getInstance();
 
 		try {
 			connexion = daoFactory.getConnection();
 			if (!oldVille.getNomCommune().equals(newVille.getNomCommune())) {
-				preparedStatement = connexion
+				preparedStatementNom = connexion
 						.prepareStatement("UPDATE ville_france SET Nom_commune =" + newVille.getNomCommune()
 								+ " WHERE Code_commune_INSEE = " + oldVille.getCodeCommuneINSEE() + ";");
-				preparedStatement.executeUpdate();
+				preparedStatementNom.executeUpdate();
 			}
 			if (!oldVille.getLibelleAcheminement().equals(newVille.getLibelleAcheminement())) {
-				preparedStatement = connexion.prepareStatement(
+				preparedStatementLibelle = connexion.prepareStatement(
 						"UPDATE ville_france SET Libelle_acheminement =" + newVille.getLibelleAcheminement()
 								+ " WHERE Code_commune_INSEE = " + oldVille.getCodeCommuneINSEE() + ";");
-				preparedStatement.executeUpdate();
+				preparedStatementLibelle.executeUpdate();
 			}
 			if (Double.compare(oldVille.getLatitude(), newVille.getLatitude()) != 0) {
-				preparedStatement = connexion
+				preparedStatementLat = connexion
 						.prepareStatement("UPDATE ville_france SET Latitude =" + Double.toString(newVille.getLatitude())
 								+ " WHERE Code_commune_INSEE = " + oldVille.getCodeCommuneINSEE() + ";");
-				preparedStatement.executeUpdate();
+				preparedStatementLat.executeUpdate();
 			}
 			if (Double.compare(oldVille.getLongitude(), newVille.getLongitude()) != 0) {
-				preparedStatement = connexion.prepareStatement(
+				preparedStatementLong = connexion.prepareStatement(
 						"UPDATE ville_france SET Longitude =" + Double.toString(newVille.getLongitude())
 								+ " WHERE Code_commune_INSEE = " + oldVille.getCodeCommuneINSEE() + ";");
 
-				preparedStatement.executeUpdate();
+				preparedStatementLong.executeUpdate();
 			}
 			if (!oldVille.getCodePostal().equals(newVille.getCodePostal())) {
-				preparedStatement = connexion
+				preparedStatementPostal = connexion
 						.prepareStatement("UPDATE ville_france SET Code_postal =" + newVille.getCodePostal()
 								+ " WHERE Code_commune_INSEE = " + oldVille.getCodeCommuneINSEE() + ";");
-				preparedStatement.executeUpdate();
+				preparedStatementPostal.executeUpdate();
+			}
+			if (!oldVille.getLigne5().equals(newVille.getLigne5())) {
+				preparedStatementLigne5 = connexion.prepareStatement("UPDATE ville_france SET Ligne_5 ="
+						+ newVille.getLigne5() + " WHERE Code_commune_INSEE = " + oldVille.getCodeCommuneINSEE() + ";");
+				preparedStatementLigne5.executeUpdate();
 			}
 			if (!oldVille.getCodeCommuneINSEE().equals(newVille.getCodeCommuneINSEE())) {
-				preparedStatement = connexion.prepareStatement(
+				preparedStatementInsee = connexion.prepareStatement(
 						"UPDATE ville_france SET Code_commune_INSEE =" + newVille.getCodeCommuneINSEE()
 								+ " WHERE Code_commune_INSEE = " + oldVille.getCodeCommuneINSEE() + ";");
-				preparedStatement.executeUpdate();
+				preparedStatementInsee.executeUpdate();
 			}
-			preparedStatement.close();
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -139,6 +153,14 @@ public class VilleDaoImpl implements VilleDao {
 			} catch (SQLException e2) {
 
 			}
+		} finally {
+			preparedStatementNom.close();
+			preparedStatementLibelle.close();
+			preparedStatementLat.close();
+			preparedStatementLong.close();
+			preparedStatementPostal.close();
+			preparedStatementInsee.close();
+			preparedStatementLigne5.close();
 		}
 
 	}
