@@ -12,39 +12,35 @@ import com.dto.Ville;
 public class VilleDaoImpl implements VilleDao {
 
 	public VilleDaoImpl() {
-		//do nothing because it's the constructor
+		// do nothing because it's the constructor
 	}
 
-	private  DaoFactory daoFactory;
+	private DaoFactory daoFactory;
 	private Log logger = null;
 
 	public ResultSet getVille(String codeINSEE) throws SQLException {
 
 		Connection connexion = null;
 		daoFactory = DaoFactory.getInstance();
-		
+
 		String requete = null;
-		if ( codeINSEE == null) {
+		if (codeINSEE == null) {
 			requete = "SELECT * FROM ville_france;";
 		} else {
-			requete = "SELECT * FROM ville_france WHERE Code_INSEE = "+codeINSEE+";";
+			requete = "SELECT * FROM ville_france WHERE Code_INSEE = " + codeINSEE + ";";
 		}
 		connexion = daoFactory.getConnection();
-		
+
 		try (Statement statement = connexion.createStatement()) {
-			
-			try (ResultSet resultat = statement.executeQuery(requete)){
+
+			try (ResultSet resultat = statement.executeQuery(requete)) {
 				return resultat;
 			}
 
 		} catch (SQLException e) {
-			try {
-				if (connexion != null) {
-					connexion.rollback();
-				}
-			} catch (SQLException e2) {
-				logger.info(e2);
-			}
+
+			logger.info(e);
+
 		}
 
 		return null;

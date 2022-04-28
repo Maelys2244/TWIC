@@ -22,9 +22,10 @@ public class VilleController {
 	VilleDaoImpl villeDaoImpl = new VilleDaoImpl();
 
 	@RequestMapping(value = "/ville", method = RequestMethod.GET)
-	public ArrayList<Ville> get(@RequestParam(required = false, value = "codeINSEE") String codeINSEE) throws SQLException {
+	public ArrayList<Ville> get(@RequestParam(required = false, value = "codeINSEE") String codeINSEE)
+			throws SQLException {
 
-		ArrayList<Ville> listeVille = new ArrayList<Ville>();
+		ArrayList<Ville> listeVille = new ArrayList<>();
 
 		ResultSet resultat = villeDaoImpl.getVille(codeINSEE);
 
@@ -50,8 +51,7 @@ public class VilleController {
 	@RequestMapping(value = "/ville", method = RequestMethod.POST)
 	public ResponseEntity<Object> post(@RequestBody String request) throws SQLException {
 		Gson gson = new Gson();
-		Ville ville = new Ville();
-		ville = gson.fromJson(request, Ville.class);
+		Ville ville = gson.fromJson(request, Ville.class);
 		villeDaoImpl.saveVille(ville);
 
 		return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -66,7 +66,7 @@ public class VilleController {
 
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
-	
+
 	@RequestMapping(value = "/ville/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Object> delete(@PathVariable String id) throws SQLException {
 		Ville ville = get(id).get(0);
