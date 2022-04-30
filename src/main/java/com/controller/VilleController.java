@@ -1,6 +1,5 @@
 package com.controller;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -24,28 +23,7 @@ public class VilleController {
 	@RequestMapping(value = "/ville", method = RequestMethod.GET)
 	public ArrayList<Ville> get(@RequestParam(required = false, value = "codeINSEE") String codeINSEE)
 			throws SQLException {
-
-		ArrayList<Ville> listeVille = new ArrayList<>();
-
-		ResultSet resultat = villeDaoImpl.getVille(codeINSEE);
-
-		try {
-			while (resultat.next()) {
-				Ville ville = new Ville();
-
-				ville.setNomCommune(resultat.getString("Nom_Commune"));
-				ville.setCodeCommuneINSEE(resultat.getString("Code_commune_INSEE"));
-				ville.setCodePostal(resultat.getString("Code_postal"));
-				ville.setLatitude(Float.valueOf(resultat.getString("Latitude")));
-				ville.setLibelleAcheminement(resultat.getString("Libelle_acheminement"));
-				ville.setLongitude(Float.valueOf(resultat.getString("Longitude")));
-				listeVille.add(ville);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return listeVille;
+		return  villeDaoImpl.getVille(codeINSEE);
 	}
 
 	@RequestMapping(value = "/ville", method = RequestMethod.POST)
