@@ -17,7 +17,7 @@ public class VilleDaoImpl implements VilleDao {
 
 	private DaoFactory daoFactory;
 
-	public ArrayList<Ville> getVille(String codeINSEE) throws SQLException {
+	public ArrayList<Ville> getVille(String codeINSEE) throws SQLException{
 
 		Connection connexion = null;
 		daoFactory = DaoFactory.getInstance();
@@ -53,7 +53,7 @@ public class VilleDaoImpl implements VilleDao {
 		return listeVille;
 	}
 
-	public void saveVille(Ville ville) throws SQLException {
+	public void saveVille(Ville ville){
 		daoFactory = DaoFactory.getInstance();
 		Connection connexion = null;
 
@@ -81,7 +81,7 @@ public class VilleDaoImpl implements VilleDao {
 
 	}
 
-	public void updateVille(Ville oldVille, Ville newVille) throws SQLException {
+	public void updateVille(Ville oldVille, Ville newVille){
 
 		Connection connexion = null;
 
